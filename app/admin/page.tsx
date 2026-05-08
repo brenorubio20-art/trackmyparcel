@@ -1,0 +1,259 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { supabase } from "@/app/lib/supabase";
+
+export default function DashboardPage() {
+
+  const [trackings, setTrackings] =
+    useState<any[]>([]);
+
+  const [code, setCode] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [status, setStatus] = useState("");
+  const [store, setStore] = useState("");
+
+  useEffect(() => {
+
+    loadTrackings();
+
+  }, []);
+
+  const loadTrackings = async () => {
+
+    const { data, error } =
+      await supabase
+        .from("trackings")
+        .select("*")
+        .order("id", {
+          ascending: false,
+        });
+
+    if (error) {
+
+      console.log(error);
+      return;
+
+    }
+
+    setTrackings(data || []);
+
+  };
+
+  const createTracking = async () => {
+
+    if (
+      !code ||
+      !from ||
+      !to ||
+      !status ||
+      !store
+    ) {
+      alert("Fill all fields");
+      return;
+    }
+
+    const { error } =
+      await supabase
+        .from("trackings")
+        .insert([
+          {
+            code: code.toUpperCase(),
+            from,
+            to,
+            status,
+            store,
+          },
+        ]);
+
+    if (error) {
+
+      console.log(error);
+      alert("Error creating tracking");
+      return;
+
+    }
+
+    await loadTrackings();
+
+    setCode("");
+    setFrom("");
+    setTo("");
+    setStatus("");
+    setStore("");
+
+  };
+
+  const deleteTracking = async (
+    trackingCode: string
+  ) => {
+
+    await supabase
+      .from("trackings")
+      .delete()
+      .eq("code", trackingCode);
+
+    await loadTrackings();
+
+  };
+
+  return (
+    <main className="min-h-screen bg-black text-white p-10">
+
+      <div className="max-w-7xl mx-auto">
+
+        <h1 className="text-5xl font-bold mb-2">
+          Admin Dashboard
+        </h1>
+
+        <p className="text-gray-400 mb-10">
+          TRACKMYPARCEL Management Panel
+        </p>
+
+        <div className="bg-zinc-900 rounded-3xl p-8 mb-10">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Create Tracking
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-5">
+
+            <input
+              type="text"
+              placeholder="Tracking Code"
+              value={code}
+              onChange={(e) =>
+                setCode(e.target.value)
+              }
+              className="bg-black px-5 py-4 rounded-xl outline-none"
+            />
+
+            <input
+              type="text"
+              placeholder="Origin"
+              value={from}
+              onChange={(e) =>
+                setFrom(e.target.value)
+              }
+              className="bg-black px-5 py-4 rounded-xl outline-none"
+            />
+
+            <input
+              type="text"
+              placeholder="Destination"
+              value={to}
+              onChange={(e) =>
+                setTo(e.target.value)
+              }
+              className="bg-black px-5 py-4 rounded-xl outline-none"
+            />
+
+            <input
+              type="text"
+              placeholder="Status"
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value)
+              }
+              className="bg-black px-5 py-4 rounded-xl outline-none"
+            />
+
+            <input
+              type="text"
+              placeholder="Store Name"
+              value={store}
+              onChange={(e) =>
+                setStore(e.target.value)
+              }
+              className="bg-black px-5 py-4 rounded-xl outline-none"
+            />
+
+          </div>
+
+          <button
+            onClick={createTracking}
+            className="mt-6 bg-green-500 hover:bg-green-400 transition px-8 py-4 rounded-xl font-bold text-lg"
+          >
+            Create Tracking
+          </button>
+
+        </div>
+
+        <div className="bg-zinc-900 rounded-3xl p-8">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Created Labels
+          </h2>
+
+          <div className="space-y-5">
+
+            {trackings.map((item, index) => (
+
+              <div
+                key={index}
+                className="bg-black rounded-2xl p-6 flex items-center justify-between"
+              >
+
+                <div>
+
+                  <h3 className="text-3xl font-bold mb-2">
+                    {item.code}
+                  </h3>
+
+                  <div className="space-y-1 text-gray-300">
+
+                    <p>
+                      <span className="font-bold text-white">
+                        From:
+                      </span>{" "}
+                      {item.from}
+                    </p>
+
+                    <p>
+                      <span className="font-bold text-white">
+                        To:
+                      </span>{" "}
+                      {item.to}
+                    </p>
+
+                    <p>
+                      <span className="font-bold text-white">
+                        Status:
+                      </span>{" "}
+                      {item.status}
+                    </p>
+
+                    <p>
+                      <span className="font-bold text-white">
+                        Store:
+                      </span>{" "}
+                      {item.store}
+                    </p>
+
+                  </div>
+
+                </div>
+
+                <button
+                  onClick={() =>
+                    deleteTracking(item.code)
+                  }
+                  className="bg-red-500 hover:bg-red-400 transition px-6 py-3 rounded-xl font-bold"
+                >
+                  Delete
+                </button>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  );
+}
