@@ -14,9 +14,25 @@ export default function DashboardPage() {
   const [status, setStatus] = useState("");
   const [store, setStore] = useState("");
 
+  const [authorized, setAuthorized] =
+    useState(false);
+
   useEffect(() => {
 
-    loadTrackings();
+    const password =
+      prompt("Enter admin password");
+
+    if (password === "track2026") {
+
+      setAuthorized(true);
+
+    } else {
+
+      alert("Wrong password");
+
+      window.location.href = "/";
+
+    }
 
   }, []);
 
@@ -40,6 +56,24 @@ export default function DashboardPage() {
     setTrackings(data || []);
 
   };
+
+  useEffect(() => {
+
+    if (authorized) {
+
+      loadTrackings();
+
+    }
+
+  }, [authorized]);
+
+  if (!authorized) {
+
+    return (
+      <main className="min-h-screen bg-black" />
+    );
+
+  }
 
   const createTracking = async () => {
 
