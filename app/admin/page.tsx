@@ -84,8 +84,10 @@ export default function DashboardPage() {
       !status ||
       !store
     ) {
+
       alert("Fill all fields");
       return;
+
     }
 
     const { error } =
@@ -93,7 +95,7 @@ export default function DashboardPage() {
         .from("trackings")
         .insert([
           {
-            code: code.toUpperCase(),
+            code,
             from,
             to,
             status,
@@ -109,13 +111,44 @@ export default function DashboardPage() {
 
     }
 
-    await loadTrackings();
-
     setCode("");
     setFrom("");
     setTo("");
     setStatus("");
     setStore("");
+
+    loadTrackings();
+
+  };
+
+  const updateStatus = async (
+    trackingCode: string
+  ) => {
+
+    const newStatus =
+      prompt("New status");
+
+    if (!newStatus) return;
+
+    const { error } =
+      await supabase
+        .from("trackings")
+        .update({
+          status: newStatus,
+        })
+        .eq("code", trackingCode);
+
+    if (error) {
+
+      console.log(error);
+
+      alert("Error updating");
+
+      return;
+
+    }
+
+    await loadTrackings();
 
   };
 
@@ -195,19 +228,19 @@ export default function DashboardPage() {
 
             <input
               type="text"
-              placeholder="Store Name"
+              placeholder="Store"
               value={store}
               onChange={(e) =>
                 setStore(e.target.value)
               }
-              className="bg-black px-5 py-4 rounded-xl outline-none"
+              className="bg-black px-5 py-4 rounded-xl outline-none md:col-span-2"
             />
 
           </div>
 
           <button
             onClick={createTracking}
-            className="mt-6 bg-green-500 hover:bg-green-400 transition px-8 py-4 rounded-xl font-bold text-lg"
+            className="mt-8 bg-green-500 hover:bg-green-400 transition px-8 py-4 rounded-2xl text-xl font-bold"
           >
             Create Tracking
           </button>
@@ -217,7 +250,7 @@ export default function DashboardPage() {
         <div className="bg-zinc-900 rounded-3xl p-8">
 
           <h2 className="text-3xl font-bold mb-8">
-            Created Labels
+            All Trackings
           </h2>
 
           <div className="space-y-5">
@@ -269,14 +302,23 @@ export default function DashboardPage() {
 
                 </div>
 
-                <button
-                  onClick={() =>
-                    deleteTracking(item.code)
-                  }
-                  className="bg-red-500 hover:bg-red-400 transition px-6 py-3 rounded-xl font-bold"
-                >
-                  Delete
-                </button>
+                <div className="flex gap-3">
+
+                  <button
+                    onClick={() => updateStatus(item.code)}
+                    className="bg-blue-500 hover:bg-blue-400 transition px-6 py-3 rounded-xl font-bold"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => deleteTracking(item.code)}
+                    className="bg-red-500 hover:bg-red-400 transition px-6 py-3 rounded-xl font-bold"
+                  >
+                    Delete
+                  </button>
+
+                </div>
 
               </div>
 
@@ -291,3 +333,4 @@ export default function DashboardPage() {
     </main>
   );
 }
+
