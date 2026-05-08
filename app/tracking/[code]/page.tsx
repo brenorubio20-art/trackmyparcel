@@ -98,7 +98,7 @@ export default function TrackingPage() {
                   Tracking Code
                 </p>
 
-                <h1 className="text-6xl font-bold">
+                <h1 className="text-3xl md:text-6xl font-bold">
                   {shipment.code}
                 </h1>
 

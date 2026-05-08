@@ -28,9 +28,13 @@ const [trackingCode, setTrackingCode] = useState("");
 
           <nav className="flex gap-6 text-sm text-gray-300">
             <a href="#">Tracking</a>
-            <a href="#">Services</a>
-            <a href="#">Support</a>
-            <a href="#">Contact</a>
+            <a href="/services">Services</a>
+            <a href="mailto:support@trackmyparcel.co.uk">
+  Support
+</a>
+            <a href="mailto:contact@trackmyparcel.co.uk">
+  Contact
+</a>
           </nav>
         </div>
       </header>
@@ -84,9 +88,11 @@ const [trackingCode, setTrackingCode] = useState("");
           </p>
 
           <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="#">Privacy Policy</a>
+            <a href="/privacy-policy">Privacy Policy</a>
             <a href="#">Terms</a>
-            <a href="#">Support</a>
+            <a href="mailto:support@trackmyparcel.co.uk">
+  Support
+</a>
           </div>
 
         </div>
