@@ -122,35 +122,64 @@ export default function DashboardPage() {
   };
 
   const updateStatus = async (
-    trackingCode: string
-  ) => {
+  trackingCode: string
+) => {
+  alert("FUNCTION RUNNING");
 
-    const newStatus =
-      prompt("New status");
+  const newStatus =
+    prompt("New status");
 
-    if (!newStatus) return;
+  if (!newStatus) return;
 
-    const { error } =
-      await supabase
-        .from("trackings")
-        .update({
-          status: newStatus,
-        })
-        .eq("code", trackingCode);
+  const { error } =
+    await supabase
+      .from("trackings")
+      .update({
+        status: newStatus,
+      })
+      .eq("code", trackingCode);
 
-    if (error) {
+  if (error) {
 
-      console.log(error);
+    console.log(error);
 
-      alert("Error updating");
+    alert("Error updating");
 
-      return;
+    return;
 
-    }
+  }
 
-    await loadTrackings();
+  const { error: insertError } =
+    await supabase
+      .from("tracking_events")
+      .insert([
+        {
+          tracking_code:
+            trackingCode,
 
-  };
+          title: newStatus,
+
+          description:
+            `Tracking updated to ${newStatus}`,
+        },
+      ]);
+
+  if (insertError) {
+
+    console.log(insertError);
+
+    alert(
+      JSON.stringify(insertError)
+    );
+
+    return;
+
+  }
+
+  await loadTrackings();
+
+};
+  
 
   const deleteTracking = async (
     trackingCode: string
@@ -333,4 +362,3 @@ export default function DashboardPage() {
     </main>
   );
 }
-
