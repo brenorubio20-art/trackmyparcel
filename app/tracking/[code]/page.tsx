@@ -29,7 +29,8 @@ export default function TrackingPage() {
 
   const [events, setEvents] =
     useState<any[]>([]);
-
+  const [loading, setLoading] =
+  useState(true);
   useEffect(() => {
 
     if (code) {
@@ -39,6 +40,7 @@ export default function TrackingPage() {
   }, [code]);
 
   const loadTracking = async () => {
+    setLoading(true);
     await new Promise((resolve) =>
   setTimeout(resolve, 1500)
 );
@@ -71,7 +73,9 @@ export default function TrackingPage() {
     setEvents(eventsData || []);
 
   };
-
+if (loading) {
+  return null;
+}
   if (!shipment) {
 
     return (
