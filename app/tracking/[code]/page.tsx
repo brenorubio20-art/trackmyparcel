@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-
+import Loading from "./loading";
 import {
   PackageCheck,
   Truck,
@@ -74,7 +74,7 @@ export default function TrackingPage() {
 
   };
 if (loading) {
-  return null;
+  return <Loading />;
 }
   if (!shipment) {
 
