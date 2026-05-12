@@ -39,6 +39,9 @@ export default function TrackingPage() {
   }, [code]);
 
   const loadTracking = async () => {
+    await new Promise((resolve) =>
+  setTimeout(resolve, 1500)
+);
 
     const { data, error } =
       await supabase
