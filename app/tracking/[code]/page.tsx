@@ -71,7 +71,7 @@ export default function TrackingPage() {
         });
 
     setEvents(eventsData || []);
-
+setLoading(false);
   };
 if (loading) {
   return <Loading />;
